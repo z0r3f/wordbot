@@ -1626,11 +1626,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "word-bot"
+name = "wordbot"
 version = "0.1.0"
 dependencies = [
  "log",
  "pretty_env_logger",
+ "reqwest",
+ "serde",
+ "serde_json",
  "teloxide",
  "tokio",
 ]
