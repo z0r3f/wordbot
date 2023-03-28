@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/ferozar/WordBot/_apis/build/status/z0r3f.wordbot?branchName=azure-pipelines)](https://dev.azure.com/ferozar/WordBot/_build/latest?definitionId=26&branchName=azure-pipelines)
+
 # Rust Dictionary Bot
 
 This is a simple bot written in Rust that retrieves the definition of a word from an online dictionary.
