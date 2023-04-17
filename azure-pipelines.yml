@@ -9,6 +9,9 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+
 steps:
 - script: |
     curl https://sh.rustup.rs -sSf | sh -s -- -y
