@@ -4,12 +4,12 @@ use pretty_env_logger::formatted_builder;
 use teloxide::{prelude::*, utils::command::BotCommands};
 use teloxide::types::ParseMode;
 use tokio::time;
-
-
+use telegram::Telegram;
 
 use crate::dictionary::DictionaryErrorKind;
 
 mod dictionary;
+mod telegram;
 
 #[tokio::main]
 async fn main() {
@@ -20,7 +20,6 @@ async fn main() {
 
     info!("Starting word bot...");
 
-    // let bot = Bot::from_env();
     let bot = Bot::from_env();
 
     let mut commands_set = false;
@@ -36,8 +35,6 @@ async fn main() {
             }
         }
     }
-
-
     Command::repl(bot, answer).await;
 }
 
@@ -55,22 +52,10 @@ async fn answer(bot: Bot, msg: Message, cmd: Command) -> ResponseResult<()> {
     info!("Parsed command: {:?}", cmd);
     match cmd {
         Command::Help => bot.send_message(msg.chat.id, Command::descriptions().to_string()).await?,
-        Command::Info(text) => bot.send_message(msg.chat.id, sanitize_string(build_info_response(text.as_str()).await)).parse_mode(ParseMode::MarkdownV2).await?,
+        Command::Info(word) => bot.send_message(msg.chat.id, build_info_response(word.as_str()).await).parse_mode(ParseMode::MarkdownV2).await?,
     };
     Ok(())
 }
-
-fn sanitize_string(s: String) -> String {
-    let special_chars = ["#", "-", "(", ")", ".", "!"];
-    let mut sanitized = s;
-
-    for c in &special_chars {
-        sanitized = sanitized.replace(*c, &format!("\\{}", c));
-    }
-
-    sanitized
-}
-
 
 async fn build_info_response(word: &str) -> String {
     return match dictionary::definition(word).await {
@@ -78,27 +63,7 @@ async fn build_info_response(word: &str) -> String {
             if defs.is_empty() {
                 "No definition found".to_string()
             } else {
-                //let definition = &defs[0];
-                let mut message = format!("*Definitions for* _{}_:\n", word);
-                for definition in &defs {
-                    for meaning in &definition.meanings {
-                        message.push_str(&format!("*[{}]*\n", meaning.part_of_speech));
-                        for def in &meaning.definitions {
-                            message.push_str(&format!("- {}\n", def.definition));
-                            // if let Some(synonyms) = &def.synonyms {
-                            //     message.push_str(&format!("Synonyms: {}\n", synonyms.join(", ")));
-                            // }
-                            // if let Some(antonyms) = &def.antonyms {
-                            //     message.push_str(&format!("Antonyms: {}\n", antonyms.join(", ")));
-                            // }
-                            // if let Some(example) = &def.example {
-                            //     message.push_str(&format!("Example: {}\n", example));
-                            // }
-                        }
-                        message.push_str("\n");
-                    }
-                }
-                message
+                defs.to_message()
             }
         }
         Err(e) => {
@@ -109,14 +74,4 @@ async fn build_info_response(word: &str) -> String {
             }
         }
     };
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_sanitize_string() {
-        assert_eq!(sanitize_string("(".to_string()), "\\(");
-    }
 }

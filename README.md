@@ -2,7 +2,7 @@
 
 # Rust Dictionary Bot
 
-This is a simple bot written in Rust that retrieves the definition of a word from an online dictionary.
+This is a simple bot written in Rust that retrieves the definition of a word from an online dictionary (Merriam-Webster Dictionary API).
 
 ## Getting Started
 
