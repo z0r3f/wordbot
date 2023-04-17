@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/ferozar/WordBot/_apis/build/status/z0r3f.wordbot?branchName=azure-pipelines)](https://dev.azure.com/ferozar/WordBot/_build/latest?definitionId=26&branchName=azure-pipelines)
+[![Build Status](https://dev.azure.com/ferozar/WordBot/_apis/build/status/z0r3f.wordbot?branchName=master)](https://dev.azure.com/ferozar/WordBot/_build/latest?definitionId=26&branchName=master)
 
 # Rust Dictionary Bot
 
