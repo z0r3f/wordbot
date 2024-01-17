@@ -84,11 +84,11 @@ To install the appropriate dependencies in the container, I relied on `ldd`, so 
 docker build --tag z0r3f/wordbot-docker:latest .
 ```
 ```shell
-docker tag z0r3f/wordbot-docker:latest z0r3f/wordbot-docker:0.1.0
+docker tag z0r3f/wordbot-docker:latest z0r3f/wordbot-docker:0.2.1
 ```
 ```shell
 docker push z0r3f/wordbot-docker:latest
-docker push z0r3f/wordbot-docker:0.1.0
+docker push z0r3f/wordbot-docker:0.2.1
 ```
 
 ## Contributing
