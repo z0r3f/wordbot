@@ -30,7 +30,7 @@ async fn main() {
                 info!("Bot commands set successfully");
             }
             Err(err) => {
-                error!("Failed to set bot commands: {:?}", err);
+                error!("Failed to set bot commands: {:?}: {:?}", err, err.to_string());
                 time::sleep(Duration::from_secs(5)).await;
             }
         }
