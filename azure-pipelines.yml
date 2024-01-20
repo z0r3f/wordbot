@@ -4,13 +4,10 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+  - tags
 
 pool:
   vmImage: ubuntu-latest
-
-variables:
-  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
 
 steps:
 - script: |
@@ -23,7 +20,7 @@ steps:
   displayName: Cargo test
 
 - task: Docker@2
-  condition: and(succeeded(), eq(variables.isMaster, true))
+  condition: and(succeeded())
   inputs:
     containerRegistry: 'Docker hub wordbot'
     repository: 'z0r3f/wordbot-docker'
