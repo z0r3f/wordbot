@@ -4,7 +4,9 @@
 # https://aka.ms/yaml
 
 trigger:
-  - tags
+  tags:
+    include:
+      - '*'
 
 pool:
   vmImage: ubuntu-latest
@@ -27,5 +29,5 @@ steps:
     command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
     tags: |
-      $(Build.BuildId)
+      $(Build.SourceBranchName)
       latest
