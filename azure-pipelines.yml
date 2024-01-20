@@ -20,7 +20,7 @@ steps:
   displayName: Cargo test
 
 - task: Docker@2
-  condition: and(succeeded())
+  condition: succeeded()
   inputs:
     containerRegistry: 'Docker hub wordbot'
     repository: 'z0r3f/wordbot-docker'
