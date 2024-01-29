@@ -1,4 +1,5 @@
 use crate::dictionary::Definition;
+use crate::urban::UrbanDefinition;
 
 pub trait Sanitize {
     fn sanitize(&self) -> String;
@@ -6,7 +7,8 @@ pub trait Sanitize {
 
 impl Sanitize for String {
     fn sanitize(&self) -> String {
-        let special_chars = ["#", "-", "(", ")", ".", "!"];
+        //let special_chars = ["#", "-", "(", ")", ".", "!"];
+        let special_chars = ["[", "]", "(", ")", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"];
         let mut sanitized = self.clone();
 
         for c in &special_chars {
@@ -53,6 +55,30 @@ impl Telegram for Definition {
     }
 }
 
+impl Telegram for Vec<UrbanDefinition> {
+    fn build_message(&self) -> String {
+        let mut message = String::new();
+        let custom = if self.len() > 1 { "s" } else { "" };
+        message.push_str(&format!("_Found {} urban definition{} for_ *{}*\n", self.len(), custom, self[0].word));
+        for (_, definition) in self.iter().enumerate() {
+            message.push_str(&definition.build_message());
+        }
+        message
+    }
+}
+
+impl Telegram for UrbanDefinition {
+    fn build_message(&self) -> String {
+        let mut message = String::new();
+        message.push_str(&format!("\n*Definition:*\n_{}_\n", self.definition));
+        if !self.example.is_empty() {
+            message.push_str(&format!("*Example:*\n_{}_\n", self.example));
+        }
+        message.push_str(&format!("*Author:*\n_{}_\n", self.author));
+        message
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::dictionary::{DefinitionDetail, Meaning};
@@ -94,11 +120,11 @@ mod tests {
                             definition: "a procedure intended to establish the quality, performance, or reliability of something, especially before it is taken into widespread use".to_string(),
                             antonyms: Some(vec!["flunk".to_string()]),
                             synonyms: Some(vec!["exam".to_string(), "trial".to_string()]),
-                            example: Some("this is only a test".to_string())
+                            example: Some("this is only a test".to_string()),
                         },
-                    ]
+                    ],
                 }
-            ]
+            ],
         }];
 
         let expected = "*[noun]*\n\\- a procedure intended to establish the quality, performance, or reliability of something, especially before it is taken into widespread use\n\n".to_string();
@@ -119,11 +145,11 @@ mod tests {
                                 definition: "a thing characteristic of its kind or illustrating a general rule".to_string(),
                                 antonyms: Some(vec!["flunk".to_string()]),
                                 synonyms: Some(vec!["exam".to_string(), "trial".to_string()]),
-                                example: Some("this is only a test".to_string())
+                                example: Some("this is only a test".to_string()),
                             }
-                        ]
+                        ],
                     }
-                ]
+                ],
             },
             Definition {
                 word: "test".to_string(),
@@ -135,12 +161,12 @@ mod tests {
                                 definition: "take measures to check the quality, performance, or reliability of (something), especially before putting it into widespread use or practice".to_string(),
                                 antonyms: Some(vec!["flunk".to_string()]),
                                 synonyms: Some(vec!["exam".to_string(), "trial".to_string()]),
-                                example: Some("this is only a test".to_string())
+                                example: Some("this is only a test".to_string()),
                             },
-                        ]
+                        ],
                     }
-                ]
-            }
+                ],
+            },
         ];
 
         let expected_output = "\
