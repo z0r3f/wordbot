@@ -5,9 +5,14 @@
 
 trigger:
   branches:
-    exclude:
-      - '*'
+    include:
+      - master
   tags:
+    include:
+      - '*'
+
+pr:
+  branches:
     include:
       - '*'
 
@@ -16,29 +21,29 @@ pool:
 
 
 steps:
-- script: echo $(URBAN_DICTIONARY_KEY)
-  env:
-    URBAN_DICTIONARY_KEY: $(URBAN_DICTIONARY_KEY)
+  - script: echo $(URBAN_DICTIONARY_KEY)
+    env:
+      URBAN_DICTIONARY_KEY: $(URBAN_DICTIONARY_KEY)
 
-- script: |
-    curl https://sh.rustup.rs -sSf | sh -s -- -y
-    echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
-  displayName: Install rust
-- script: cargo build --all
-  displayName: Cargo build
-- script: cargo test --all
-  displayName: Cargo test
-  env:
-    URBAN_DICTIONARY_KEY: $(URBAN_DICTIONARY_KEY)
+  - script: |
+      curl https://sh.rustup.rs -sSf | sh -s -- -y
+      echo "##vso[task.setvariable variable=PATH;]$PATH:$HOME/.cargo/bin"
+    displayName: Install rust
+  - script: cargo build --all
+    displayName: Cargo build
+  - script: cargo test --all
+    displayName: Cargo test
+    env:
+      URBAN_DICTIONARY_KEY: $(URBAN_DICTIONARY_KEY)
 
-- task: Docker@2
-  condition: succeeded()
-  inputs:
-    containerRegistry: 'Docker hub wordbot'
-    repository: 'z0r3f/wordbot-docker'
-    command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
-    arguments: '--build-arg URBAN_DICTIONARY_KEY=$(URBAN_DICTIONARY_KEY)'
-    tags: |
-      $(Build.SourceBranchName)
-      latest
+  - task: Docker@2
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranchIsTag'], true))
+    inputs:
+      containerRegistry: 'Docker hub wordbot'
+      repository: 'z0r3f/wordbot-docker'
+      command: 'buildAndPush'
+      Dockerfile: '**/Dockerfile'
+      arguments: '--build-arg URBAN_DICTIONARY_KEY=$(URBAN_DICTIONARY_KEY)'
+      tags: |
+        $(Build.SourceBranchName)
+        latest
