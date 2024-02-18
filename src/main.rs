@@ -11,6 +11,7 @@ use crate::dictionary::DictionaryErrorKind;
 
 mod dictionary;
 mod telegram;
+mod urban;
 
 #[tokio::main]
 async fn main() {
@@ -52,6 +53,8 @@ enum Command {
     Help,
     #[command(description = "Seek the text in the dictionary.")]
     Info(String),
+    #[command(description = "Seek the text in the urban dictionary.")]
+    Urban(String),
 }
 
 async fn message_handler(
@@ -67,6 +70,9 @@ async fn message_handler(
             }
             Ok(Command::Info(text)) => {
                 bot.send_message(msg.chat.id, build_info_response(&text).await).parse_mode(ParseMode::MarkdownV2).await?;
+            }
+            Ok(Command::Urban(text)) => {
+                bot.send_message(msg.chat.id, build_urban_response(&text).await).parse_mode(ParseMode::MarkdownV2).await?;
             }
             Err(_) => {
                 if text.starts_with('/') {
@@ -91,11 +97,46 @@ async fn build_info_response(word: &str) -> String {
             }
         }
         Err(e) => {
-            match e.kind {
-                DictionaryErrorKind::NotFound => "No definition found".to_string(),
-                DictionaryErrorKind::Parse => "Error on parse output".to_string(),
-                DictionaryErrorKind::Unknown => "An unknown error occurred".to_string()
+            let default_message = match e.kind {
+                DictionaryErrorKind::NotFound => "No definition found",
+                DictionaryErrorKind::Parse => "Error on parse output",
+                DictionaryErrorKind::Unknown => "An unknown error occurred"
+            };
+
+            let message = if !e.message.is_empty() {
+                format!("{}\n`{}`", default_message, e.message)
+            } else {
+                default_message.to_string()
+            };
+
+            message
+        }
+    };
+}
+
+async fn build_urban_response(word: &str) -> String {
+    return match urban::definition(word).await {
+        Ok(defs) => {
+            if defs.is_empty() {
+                "No definition found".to_string()
+            } else {
+                defs.to_message()
             }
+        }
+        Err(e) => {
+            let default_message = match e.kind {
+                DictionaryErrorKind::NotFound => "No definition found",
+                DictionaryErrorKind::Parse => "Error on parse output",
+                DictionaryErrorKind::Unknown => "An unknown error occurred"
+            };
+
+            let message = if !e.message.is_empty() {
+                format!("{}\n`{}`", default_message, e.message)
+            } else {
+                default_message.to_string()
+            };
+
+            message
         }
     };
 }
