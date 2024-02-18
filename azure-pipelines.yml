@@ -37,7 +37,7 @@ steps:
       URBAN_DICTIONARY_KEY: $(URBAN_DICTIONARY_KEY)
 
   - task: Docker@2
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranchIsTag'], true))
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], '0.4.0'))
     inputs:
       containerRegistry: 'Docker hub wordbot'
       repository: 'z0r3f/wordbot-docker'
