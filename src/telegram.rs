@@ -7,7 +7,6 @@ pub trait Sanitize {
 
 impl Sanitize for String {
     fn sanitize(&self) -> String {
-        //let special_chars = ["#", "-", "(", ")", ".", "!"];
         let special_chars = ["[", "]", "(", ")", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"];
         let mut sanitized = self.clone();
 
