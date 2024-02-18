@@ -28,6 +28,8 @@ steps:
   displayName: Cargo build
 - script: cargo test --all
   displayName: Cargo test
+  env:
+    URBAN_DICTIONARY_KEY: $(URBAN_DICTIONARY_KEY)
 
 - task: Docker@2
   condition: succeeded()
