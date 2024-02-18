@@ -1,4 +1,6 @@
 FROM rust:1.75.0 as builder
+ARG URBAN_DICTIONARY_KEY
+ENV URBAN_DICTIONARY_KEY=$URBAN_DICTIONARY_KEY
 WORKDIR /usr/src/wordbot
 COPY . .
 RUN cargo install --path .
