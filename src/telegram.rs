@@ -7,7 +7,7 @@ pub trait Sanitize {
 
 impl Sanitize for String {
     fn sanitize(&self) -> String {
-        let special_chars = ["[", "]", "(", ")", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"];
+        let special_chars = ["[", "]", "(", ")", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!", "_", "*"];
         let mut sanitized = self.clone();
 
         for c in &special_chars {
@@ -22,7 +22,7 @@ pub trait Telegram {
     fn to_message(&self) -> String {
         let mut message = String::new();
         message.push_str(&self.build_message());
-        message.sanitize()
+        message
     }
 
     fn build_message(&self) -> String;
@@ -58,7 +58,7 @@ impl Telegram for Vec<UrbanDefinition> {
     fn build_message(&self) -> String {
         let mut message = String::new();
         let custom = if self.len() > 1 { "s" } else { "" };
-        message.push_str(&format!("_Found {} urban definition{} for_ *{}*\n", self.len(), custom, self[0].word));
+        message.push_str(&format!("Found {} urban definition{} for *{}*\n", self.len(), custom, self[0].word));
         for (_, definition) in self.iter().enumerate() {
             message.push_str(&definition.build_message());
         }
@@ -69,11 +69,11 @@ impl Telegram for Vec<UrbanDefinition> {
 impl Telegram for UrbanDefinition {
     fn build_message(&self) -> String {
         let mut message = String::new();
-        message.push_str(&format!("\n*Definition:*\n_{}_\n", self.definition));
+        message.push_str(&format!("\n*Definition:*\n{}\n", self.definition.sanitize()));
         if !self.example.is_empty() {
-            message.push_str(&format!("*Example:*\n_{}_\n", self.example));
+            message.push_str(&format!("*Example:*\n{}\n", self.example.sanitize()));
         }
-        message.push_str(&format!("*Author:*\n_{}_\n", self.author));
+        message.push_str(&format!("*Author:*\n{}\n", self.author.sanitize()));
         message
     }
 }
@@ -126,7 +126,7 @@ mod tests {
             ],
         }];
 
-        let expected = "*\\[noun\\]*\n\\- a procedure intended to establish the quality, performance, or reliability of something, especially before it is taken into widespread use\n\n".to_string();
+        let expected = "*[noun]*\n- a procedure intended to establish the quality, performance, or reliability of something, especially before it is taken into widespread use\n\n".to_string();
 
         assert_eq!(defs[0].to_message(), expected);
     }
@@ -170,12 +170,10 @@ mod tests {
 
         let expected_output = "\
             *Definitions for* _example_:\n\
-            *\\[noun\\]*\n\
-            \\- a thing characteristic of its kind or illustrating a general rule\n\
+            *[noun]*\n- a thing characteristic of its kind or illustrating a general rule\n\
             \n\
             *Definitions for* _test_:\n\
-            *\\[verb\\]*\n\
-            \\- take measures to check the quality, performance, or reliability of \\(something\\), especially before putting it into widespread use or practice\n\
+            *[verb]*\n- take measures to check the quality, performance, or reliability of (something), especially before putting it into widespread use or practice\n\
             \n\
         ";
 
