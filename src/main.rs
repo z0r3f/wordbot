@@ -47,13 +47,13 @@ async fn main() {
 }
 
 #[derive(BotCommands, Clone, Debug)]
-#[command(rename_rule = "lowercase", description = "These commands are supported. Without command I will send you the definition of the text that you sent me")]
+#[command(rename_rule = "lowercase", description = "These commands are supported\\. Without command I will send you the definition of the text that you sent me")]
 enum Command {
-    #[command(description = "Display this text.")]
+    #[command(description = "Display this text\\.")]
     Help,
-    #[command(description = "Seek the text in the dictionary.")]
+    #[command(description = "Seek the text in the dictionary\\.")]
     Info(String),
-    #[command(description = "Seek the text in the urban dictionary.")]
+    #[command(description = "Seek the text in the urban dictionary\\.")]
     Urban(String),
 }
 

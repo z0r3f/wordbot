@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/ferozar/WordBot/_apis/build/status%2Fz0r3f.wordbot?branchName=refs%2Ftags%2F0.4.1)](https://dev.azure.com/ferozar/WordBot/_build/latest?definitionId=26&branchName=refs%2Ftags%2F0.4.1)
+[![Build Status](https://dev.azure.com/ferozar/WordBot/_apis/build/status%2Fz0r3f.wordbot?branchName=refs%2Ftags%2F0.4.2)](https://dev.azure.com/ferozar/WordBot/_build/latest?definitionId=26&branchName=refs%2Ftags%2F0.4.2)
 
 # Rust Dictionary Bot
 
@@ -84,11 +84,11 @@ To install the appropriate dependencies in the container, I relied on `ldd`, so 
 docker build --tag z0r3f/wordbot-docker:latest .
 ```
 ```shell
-docker tag z0r3f/wordbot-docker:latest z0r3f/wordbot-docker:0.4.1
+docker tag z0r3f/wordbot-docker:latest z0r3f/wordbot-docker:0.4.2
 ```
 ```shell
 docker push z0r3f/wordbot-docker:latest
-docker push z0r3f/wordbot-docker:0.4.1
+docker push z0r3f/wordbot-docker:0.4.2
 ```
 
 ## Contributing
