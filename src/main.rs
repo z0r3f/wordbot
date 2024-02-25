@@ -66,22 +66,45 @@ async fn message_handler(
         info!("Received message: {:?}", msg);
         match BotCommands::parse(text, me.username()) {
             Ok(Command::Help) => {
-                bot.send_message(msg.chat.id, Command::descriptions().to_string()).await?;
+                send_large_message(bot.clone(), msg.chat.id, Command::descriptions().to_string()).await?;
             }
             Ok(Command::Info(text)) => {
-                bot.send_message(msg.chat.id, build_info_response(&text).await).parse_mode(ParseMode::MarkdownV2).await?;
+                send_large_message(bot.clone(), msg.chat.id, build_info_response(&text).await).await?;
             }
             Ok(Command::Urban(text)) => {
-                bot.send_message(msg.chat.id, build_urban_response(&text).await).parse_mode(ParseMode::MarkdownV2).await?;
+                send_large_message(bot.clone(), msg.chat.id, build_urban_response(&text).await).await?;
             }
             Err(_) => {
                 if text.starts_with('/') {
                     bot.send_message(msg.chat.id, "Command not found!").await?;
                 } else {
-                    bot.send_message(msg.chat.id, build_info_response(&text).await).parse_mode(ParseMode::MarkdownV2).await?;
+                    send_large_message(bot.clone(), msg.chat.id, build_info_response(&text).await).await?;
                 }
             }
         }
+    }
+
+    Ok(())
+}
+
+pub async fn send_large_message(bot: Bot, chat_id: ChatId, message: String) -> Result<(), Box<dyn Error + Send + Sync>> {
+    let max_length = 4096;
+    let mut message = message;
+
+    while message.len() > max_length {
+        if let Some(last_newline) = message[..max_length].rfind('\n') {
+            let (chunk, rest) = message.split_at(last_newline);
+            bot.send_message(chat_id, chunk.to_string()).parse_mode(ParseMode::MarkdownV2).await?;
+            message = rest.to_string();
+        } else {
+            let (chunk, rest) = message.split_at(max_length);
+            bot.send_message(chat_id, chunk.to_string()).parse_mode(ParseMode::MarkdownV2).await?;
+            message = rest.to_string();
+        }
+    }
+
+    if !message.is_empty() {
+        bot.send_message(chat_id, message).parse_mode(ParseMode::MarkdownV2).await?;
     }
 
     Ok(())
