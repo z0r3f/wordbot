@@ -80,9 +80,9 @@ mod tests {
 
         let definition = &definitions[0];
         assert_eq!(definition.word, word);
-        assert_eq!(definition.definition, "A [road cyclist] who stays behind other cyclists' wheels so that he/she can [draft] behind them, and thus [conserve] his/her own efforts.");
-        assert_eq!(definition.example, "George is the worst wheelsucker of all, always [feigning] [fatigue] when we ask him [to be at] the front every once in a while.");
+        assert_eq!(definition.definition, "A [road cyclist] who stays behind other cyclists' wheels so that he/[she can] draft behind them, and thus [conserve] his/her own efforts.");
+        assert_eq!(definition.example, "George is [the worst] wheelsucker of all, always feigning fatigue when we ask him [to be at] the front every [once in a while].");
         assert_eq!(definition.author, "JKu");
-        assert_eq!(definition.permalink, "http://wheelsucker.urbanup.com/1766772");
+        assert_eq!(definition.permalink, "https://www.urbandictionary.com/define.php?term=wheelsucker&defid=1766772");
     }
 }
