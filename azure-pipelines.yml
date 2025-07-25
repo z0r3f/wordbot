@@ -43,7 +43,7 @@ steps:
         exit 0
       fi
 
-      TAG=${Build.SourceBranch#refs/tags/}  # Eliminamos el prefijo refs/tags/
+      TAG=$(Build.SourceBranchName)
       echo "##vso[task.setvariable variable=RELEASE_TAG]$TAG"
     condition: startsWith(variables['Build.SourceBranch'], 'refs/tags')
     displayName: 'Get tag version'
