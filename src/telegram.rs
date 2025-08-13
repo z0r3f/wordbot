@@ -7,7 +7,9 @@ pub trait Sanitize {
 
 impl Sanitize for String {
     fn sanitize(&self) -> String {
-        let special_chars = ["[", "]", "(", ")", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!", "_", "*"];
+        let special_chars = [
+            "[", "]", "(", ")", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!", "_", "*", "~", "`",
+        ];
         let mut sanitized = self.clone();
 
         for c in &special_chars {
@@ -32,7 +34,7 @@ impl Telegram for Vec<Definition> {
     fn build_message(&self) -> String {
         let mut message = String::new();
         for (_, definition) in self.iter().enumerate() {
-            message.push_str(&format!("*Definitions for* _{}_:\n", definition.word));
+            message.push_str(&format!("*Definitions for* _{}_:\n", definition.word.sanitize()));
             message.push_str(&definition.build_message());
         }
         message
@@ -44,9 +46,9 @@ impl Telegram for Definition {
     fn build_message(&self) -> String {
         let mut message = String::new();
         for meaning in &self.meanings {
-            message.push_str(&format!("*[{}]*\n", meaning.part_of_speech));
+            message.push_str(&format!("*[{}]*\n", meaning.part_of_speech.sanitize()));
             for definition in &meaning.definitions {
-                message.push_str(&format!("- {}\n", definition.definition));
+                message.push_str(&format!("- {}\n", definition.definition.sanitize()));
             }
             message.push_str("\n");
         }
@@ -58,7 +60,7 @@ impl Telegram for Vec<UrbanDefinition> {
     fn build_message(&self) -> String {
         let mut message = String::new();
         let custom = if self.len() > 1 { "s" } else { "" };
-        message.push_str(&format!("Found {} urban definition{} for *{}*\n", self.len(), custom, self[0].word));
+        message.push_str(&format!("Found {} urban definition{} for *{}*\n", self.len(), custom, self[0].word.sanitize()));
         for (_, definition) in self.iter().enumerate() {
             message.push_str(&definition.build_message());
         }
