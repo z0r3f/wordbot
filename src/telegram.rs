@@ -175,7 +175,7 @@ mod tests {
             *[noun]*\n- a thing characteristic of its kind or illustrating a general rule\n\
             \n\
             *Definitions for* _test_:\n\
-            *[verb]*\n- take measures to check the quality, performance, or reliability of (something), especially before putting it into widespread use or practice\n\
+            *[verb]*\n- take measures to check the quality, performance, or reliability of \\(something\\), especially before putting it into widespread use or practice\n\
             \n\
         ";
 
