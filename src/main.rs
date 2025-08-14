@@ -7,7 +7,8 @@ use teloxide::types::{Me, ParseMode};
 use tokio::time;
 use telegram::Telegram;
 
-use crate::dictionary::DictionaryErrorKind;
+use crate::dictionary::{DictionaryErrorKind};
+use crate::telegram::LogFormat;
 
 mod dictionary;
 mod telegram;
@@ -63,7 +64,7 @@ async fn message_handler(
     me: Me,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
     if let Some(text) = msg.text() {
-        info!("Received message: {:?}", msg);
+        info!("Received message: {}", msg.format_for_log());
         match BotCommands::parse(text, me.username()) {
             Ok(Command::Help) => {
                 send_large_message(bot.clone(), msg.chat.id, Command::descriptions().to_string()).await?;

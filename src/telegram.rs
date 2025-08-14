@@ -1,3 +1,4 @@
+use teloxide::types::Message;
 use crate::dictionary::Definition;
 use crate::urban::UrbanDefinition;
 
@@ -19,6 +20,28 @@ impl Sanitize for String {
         sanitized
     }
 }
+
+pub trait LogFormat {
+    fn format_for_log(&self) -> String;
+}
+
+impl LogFormat for Message {
+    fn format_for_log(&self) -> String {
+        let chat_id = self.chat.id;
+
+        let username = match &self.from {
+            Some(user) => user.username.as_ref()
+                .map(|u| format!("@{}", u))
+                .unwrap_or_else(|| user.first_name.clone()),
+            None => "Unknown".to_string(),
+        };
+
+        let text = self.text().unwrap_or("[No text]");
+
+        format!("Chat id [{}] >> {} >> \"{}\"", chat_id, username, text)
+    }
+}
+
 
 pub trait Telegram {
     fn to_message(&self) -> String {
