@@ -151,7 +151,7 @@ mod tests {
             ],
         }];
 
-        let expected = "*[noun]*\n- a procedure intended to establish the quality, performance, or reliability of something, especially before it is taken into widespread use\n\n".to_string();
+        let expected = "*[noun]*\n\\- a procedure intended to establish the quality, performance, or reliability of something, especially before it is taken into widespread use\n\n".to_string();
 
         assert_eq!(defs[0].to_message(), expected);
     }
@@ -195,10 +195,10 @@ mod tests {
 
         let expected_output = "\
             *Definitions for* _example_:\n\
-            *[noun]*\n- a thing characteristic of its kind or illustrating a general rule\n\
+            *[noun]*\n\\- a thing characteristic of its kind or illustrating a general rule\n\
             \n\
             *Definitions for* _test_:\n\
-            *[verb]*\n- take measures to check the quality, performance, or reliability of \\(something\\), especially before putting it into widespread use or practice\n\
+            *[verb]*\n\\- take measures to check the quality, performance, or reliability of \\(something\\), especially before putting it into widespread use or practice\n\
             \n\
         ";
 
