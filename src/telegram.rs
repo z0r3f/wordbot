@@ -1,3 +1,4 @@
+use teloxide::types::Message;
 use crate::dictionary::Definition;
 use crate::urban::UrbanDefinition;
 
@@ -19,6 +20,28 @@ impl Sanitize for String {
         sanitized
     }
 }
+
+pub trait LogFormat {
+    fn format_for_log(&self) -> String;
+}
+
+impl LogFormat for Message {
+    fn format_for_log(&self) -> String {
+        let chat_id = self.chat.id;
+
+        let username = match &self.from {
+            Some(user) => user.username.as_ref()
+                .map(|u| format!("@{}", u))
+                .unwrap_or_else(|| user.first_name.clone()),
+            None => "Unknown".to_string(),
+        };
+
+        let text = self.text().unwrap_or("[No text]");
+
+        format!("Chat id [{}] >> {} >> \"{}\"", chat_id, username, text)
+    }
+}
+
 
 pub trait Telegram {
     fn to_message(&self) -> String {
@@ -48,7 +71,7 @@ impl Telegram for Definition {
         for meaning in &self.meanings {
             message.push_str(&format!("*[{}]*\n", meaning.part_of_speech.sanitize()));
             for definition in &meaning.definitions {
-                message.push_str(&format!("- {}\n", definition.definition.sanitize()));
+                message.push_str(&format!("\\- {}\n", definition.definition.sanitize()));
             }
             message.push_str("\n");
         }
@@ -128,7 +151,7 @@ mod tests {
             ],
         }];
 
-        let expected = "*[noun]*\n- a procedure intended to establish the quality, performance, or reliability of something, especially before it is taken into widespread use\n\n".to_string();
+        let expected = "*[noun]*\n\\- a procedure intended to establish the quality, performance, or reliability of something, especially before it is taken into widespread use\n\n".to_string();
 
         assert_eq!(defs[0].to_message(), expected);
     }
@@ -172,10 +195,10 @@ mod tests {
 
         let expected_output = "\
             *Definitions for* _example_:\n\
-            *[noun]*\n- a thing characteristic of its kind or illustrating a general rule\n\
+            *[noun]*\n\\- a thing characteristic of its kind or illustrating a general rule\n\
             \n\
             *Definitions for* _test_:\n\
-            *[verb]*\n- take measures to check the quality, performance, or reliability of \\(something\\), especially before putting it into widespread use or practice\n\
+            *[verb]*\n\\- take measures to check the quality, performance, or reliability of \\(something\\), especially before putting it into widespread use or practice\n\
             \n\
         ";
 
