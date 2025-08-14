@@ -48,7 +48,7 @@ impl Telegram for Definition {
         for meaning in &self.meanings {
             message.push_str(&format!("*[{}]*\n", meaning.part_of_speech.sanitize()));
             for definition in &meaning.definitions {
-                message.push_str(&format!("- {}\n", definition.definition.sanitize()));
+                message.push_str(&format!("\\- {}\n", definition.definition.sanitize()));
             }
             message.push_str("\n");
         }
