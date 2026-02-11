@@ -1,13 +1,14 @@
 [package]
 name = "wordbot"
 edition = "2021"
+rust-version = "1.93.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 teloxide = { version = "0.17.0", features = ["macros"] }
-log = "0.4.27"
+log = "0.4.29"
 pretty_env_logger = "0.5.0"
-tokio = { version =  "1.47.1", features = ["rt-multi-thread", "macros"] }
-reqwest = { version = "0.12.23", features = ["json"] }
-serde = { version = "1.0.219", features = ["derive"] }
+tokio = { version =  "1.49.0", features = ["rt-multi-thread", "macros"] }
+reqwest = { version = "0.13.2", features = ["json"] }
+serde = { version = "1.0.228", features = ["derive"] }
